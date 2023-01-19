@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SFP2K20</title>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+</head>
+<body>
+	<div id = "map"></div>
+	<canvas id="ctx" width="250" height="250" style="border:6px solid #fff000">
+	<style type="text/css">
+		#map{
+			height:10;
+			width:10;
+			position:relative;
+			background-image:url("https://goldprogrammer.github.io/genuisgames/school_map_F1.png");
+		}body{background-color:grey;}
+	</style>
+	<script type="text/javascript">
+		var width = window.innerWidth;
+		var height = window.innerHeight;
+
+		document.getElementById("map").style.height = String(10)+"px";
+		document.getElementById("map").style.width = String(10)+"px";
+		document.getElementById("map").style.height = String(2160)+"px";
+		document.getElementById("map").style.width = String(3840)+"px";
+		document.getElementById("map").style.left = "0px"
+		document.getElementById("map").style.top = "0px"
+
+		var canvas = document.getElementById("ctx")
+		canvas.style.position = "absolute";
+		canvas.style.top = String((height/2)-128)+"px"
+		canvas.style.left = String((width/2)-128)+"px"
+
+		var ctx = document.getElementById("ctx").getContext("2d");
+		ctx.font = "30px Arial"
+
+		var socket = io();
+			var pos;
+			var tst = document.getElementById('test');
+			document.body.onkeydown = function(e) {
+				switch(e.keyCode) {
+					case 37: socket.emit("keylr", "left")
+						document.getElementById("map").style.left = String(parseFloat(document.getElementById("map").style.left.replace("px", ""))+1)+"px"
+						break;
+					case 39:socket.emit("keylr", "right")
+						document.getElementById("map").style.left = String(parseFloat(document.getElementById("map").style.left.replace("px", ""))-1)+"px"
+						break;
+					case 38:socket.emit("keyud", "up")
+						document.getElementById("map").style.top = String(parseFloat(document.getElementById("map").style.top.replace("px", ""))+1)+"px"
+						break;
+					case 40:socket.emit("keyud", "down")
+						document.getElementById("map").style.top = String(parseFloat(document.getElementById("map").style.top.replace("px", ""))-1)+"px"
+						break;
+					case 32:
+						break;
+					default:
+						break;
+					}
+					};
+					var onet=0
+					var oneb=0
+					var onel=0
+					var oner=0
+					var twot=0
+					var twob=0
+					var twol=0
+					var twor=0
+
+
+		socket.on('newPoss', function(data){
+			ctx.clearRect(0,0,250,250);
+			for(var i=0; i < data.length; i++){
+				ctx.fillText(data[i].number,data[i].x,data[i].y);
+			}
+
+		});
+	</script>
+</body>
+</html>

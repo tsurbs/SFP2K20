@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body height = "981px" width = "1850px" id = "body" background="IMG_20191119_074332 (1).jpg">
+<canvas id = "ctx" height="2160px" width="3840px"></canvas>
+<script type="text/javascript">
+	var ctx = document.getElementById("ctx").getContext("2d");
+
+	var f, color;
+
+	document.body.onkeydown = function(e) {
+		//confirm(e.keyCode)
+		f=e.keyCode
+		if(f == 68){color = "green"}//d
+		if(f == 87){color = "blue"}//w
+		if(f == 73){color = "orange"}//i
+		if(f == 81){color = "black"}//q
+		if(f == 32){color = "transp"}//space
+	}
+
+	document.getElementById('ctx').style.height = String(height)+"px"
+	document.getElementById('ctx').style.width = String(width)+"px"
+
+	document.body.style.height = String(height)+"px"
+	document.body.style.width = String(width)+"px"
+
+	//document.body.style.backgroundSize = String(width)+"px "+String(height)+"px"
+	document.body.style.backgroundSize = "1850px 981px"
+
+	var x, y =0
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+
+		for(var i = (width/5) - 1; i >= 0; i--) {
+			ctx.beginPath();
+			ctx.lineWidth = .25;
+			ctx.moveTo(i*5,0);
+			ctx.lineTo(i*5, height)
+			ctx.stroke();
+		}for(var i = (height/5) - 1; i >= 0; i--) {
+			ctx.beginPath();
+			ctx.lineWidth = .25;
+			ctx.moveTo(0, i*5);
+			ctx.lineTo(width, i*5)
+			ctx.stroke();
+		}
+	document.addEventListener("touchstart", touchHandler);
+	document.addEventListener("touchmove", touchHandler);
+	document.addEventListener("mousedown", touchHandler);
+	document.addEventListener("mousemove", touchHandler);
+	function touchHandler(e) {console.log(x+", "+y)
+    	if(f==16){
+    		var x = event.which || event.keyCode;
+        	x = event.clientX; 
+        	y = event.clientY; 
+        	x = 5*(Math.floor(x/5))-10;
+        	y = 5*(Math.floor(y/5))-10;
+        	scrollLeft = 5*(Math.ceil(window.scrollX/5));
+    		scrollTop = 5*(Math.ceil(window.scrollY/5));
+    		
+    		if(color == "transp"){ctx.clearRect(x+scrollLeft, y+scrollTop, 5, 5);}
+    		else{ctx.fillStyle = color
+        		ctx.fillRect(x+scrollLeft, y+scrollTop, 5, 5);
+        	
+        	}
+        	console.log(scrollLeft, scrollTop);
+    	}
+    }
+
+</script>
+</body>
+</html>

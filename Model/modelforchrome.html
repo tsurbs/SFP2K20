@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script type="text/javascript">
+
+var USER_LIST = [];
+var SOCKET_LIST = [];
+
+var map_data;
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    map_data = JSON.parse(this.responseText);
+    //document.getElementById("demo").innerHTML = myObj.name;
+    console.log("next")
+console.log(map_data.map.length);
+
+  }
+};
+xmlhttp.open("GET", "https://raw.githubusercontent.com/goldprogrammer/genuisgames/master/bestest_pixel_image_ever.txt#", true);
+xmlhttp.send()
+
+var agents = [newAgent(0)]
+var Tx, Ty;
+
+function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+
+function newAgent(id){
+	var self = {
+		x:Math.floor(Math.random()*263),
+		y:Math.floor(Math.random()*131),
+		id:id,
+		theta:0,
+		health:28,
+		number:String(Math.floor(Math.random()*10))
+	}
+	return self;
+}
+var psi_map = [[]];
+function create_map(){console.log("a")
+	for (var i = psi_map.length - 1; i >= 0; i--) {psi_map[i].push([])
+		for(var k=0; k<=263; k++){psi_map[i][k].push([])
+			for (var j = 0; j <=131; j++) {
+				psi_map[i][k].push(0)
+			}
+		}
+	}console.log(fill_psi())
+}create_map();
+function fill_psi(){
+	console.log("mapfinished")
+	var Tx = agents[0].x;
+	var Ty = agents[0].y;
+	psi_map[1][Tx][Ty] = 100;
+	for(i = 0; i<=263; i++){
+		console.log(i)
+		for(h=0; h<=3; h++){
+			for(k = 0; k <= i+2; k++){
+			 	if(h==0){
+			 		psi_map[1][Tx+i][Ty+k-1] = 100-i;
+			 	}else if(h==1){
+			 		psi_map[1][Tx-i][Ty+k-1] = 100-i;
+			 	}else if(h==2){
+			 		psi_map[1][Tx+k-1][Ty+i] = 100-i;
+			 	}else if(h==3){
+			 		psi_map[1][Tx+k-1][Ty-i] = 100-i;
+			 	}
+			 }
+		}
+	}return psi_map;
+}
+var iterations = 1;
+for (var i = 1; i <= 100; i++) {
+	agents.push(newAgent(i))
+	agents[i].number = i;
+}
+
+function checkLegal(x, y){
+	console.log(String(map_data.map[(y-1)*1320+x]))
+	console.log(x+","+y)
+	if(String(map_data.map[(y-1)*1320+x]) === "0,255,0,255"){sleep(250);return true;}
+	else if(String(map_data.map[(y-1)*1320+x]) != "0,0,0,0"){return false;}
+	else{return true}
+
+}
+
+//Iteration loops
+/*for(i=0; i<=iterations; i++){
+
+
+		for (var i = agents.length - 1; i >= 0; i--) {
+			if(agents[i].direction = "L"){agents[i].x+=5}
+			if(agents[i].direction = "R"){agents[i].x-=5}
+			if(agents[i].direction = "D"){agents[i].y+=5}
+			if(agents[i].direction = "U"){agents[i].y-=5}
+			if(agents[i].direction = "LD"){agents[i].y-=5; agents[i].x-=5}
+			if(agents[i].direction = "LU"){agents[i].y+=5; agents[i].x-=5}
+			if(agents[i].direction = "RU"){agents[i].y+=5; agents[i].x+=5}
+			if(agents[i].direction = "RD"){agents[i].y-=5; agents[i].x+=5}
+		}
+}*/
+/*setInterval(function(){
+	var pack = [];
+	for(var i in USER_LIST){
+		var user = USER_LIST[i];
+		//console.log(String(user.y))
+		pack.push({
+			x:user.x,
+			y:user.y,
+			theta:user.theta,
+			number:user.number
+		})
+	}for(var i in SOCKET_LIST){
+		var socket = SOCKET_LIST[i];
+		socket.emit('newPoss',pack);
+	}
+},1000/25);*/
+</script>
+</body>
+</html>

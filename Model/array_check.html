@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<canvas id = "ctx" height="2160px" width="3840px"></canvas>
+<script type="text/javascript">
+	var ctx = document.getElementById("ctx").getContext("2d");
+
+var map_data;
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    map_data = JSON.parse(this.responseText);
+    //document.getElementById("demo").innerHTML = myObj.name;
+    console.log("next")
+console.log(map_data.Map.length);
+
+  }
+};
+xmlhttp.open("GET", "https://raw.githubusercontent.com/goldprogrammer/genuisgames/master/array.txt#", true);
+xmlhttp.send()
+function getMousePosition(canvas, event) { 
+            let rect = canvas.getBoundingClientRect(); 
+            let x = event.clientX - rect.left; 
+            let y = event.clientY - rect.top; 
+            console.log("Coordinate x: " + x,  
+                        "Coordinate y: " + y); 
+        } 
+      
+        let canvasElem = document.querySelector("canvas"); 
+          
+        canvasElem.addEventListener("mousedown", function(e) 
+        { 
+            getMousePosition(canvasElem, e); 
+        }); 
+function lol(){
+	for (var i = map_data.Map[0].length - 1; i >= 0; i--) {
+		for (var j = map_data.Map[0][i].length - 1; j >= 0; j--) {
+			//console.log(String(map_data.Map[0][i][j]/100))}
+			ctx.fillStyle = 'rgba(0, 0, 225, '+String(map_data.Map[0][i][j]/100)+')';
+			ctx.fillRect(i,j,1,1)
+		}
+		}
+	}
+</script>
+</body>
+</html>

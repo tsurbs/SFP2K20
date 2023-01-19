@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SFP2K20</title>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+</head>
+<body>
+	<div id = "map"></div>
+	<canvas id="ctx" width="500" height="500" style="border:6px solid #fff000">
+	<style type="text/css">
+		#map{
+			height:10;
+			width:10;
+			position:relative;
+			background-image:url("https://goldprogrammer.github.io/genuisgames/F1_discretized_final.png");
+		}body{background-color:grey;}
+	</style>
+	<script type="text/javascript">
+		var self_id, i;
+		var locationy, locationx = 0;
+		var colors = ["black", "white", "yellow", "red", "indigo", "violet", "pink", "tan", "purple", "cyan" ]
+
+		var width = window.innerWidth;
+		var height = window.innerHeight;
+
+		var canvas = document.getElementById("ctx")
+
+
+		canvas.style.position = "absolute";
+		canvas.style.top = String((height/2)-253)+"px"
+		canvas.style.left = String((width/2)-253)+"px"
+
+		var img = new Image();   // Create new img element
+		img.src = "https://raw.githubusercontent.com/goldprogrammer/genuisgames/master/best_direct_exp_map.png"
+
+		var ctx = document.getElementById("ctx").getContext("2d");
+		ctx.font = "30px Arial"
+
+		var socket = io();
+			var pos;
+			var tst = document.getElementById('test');
+			document.body.onkeydown = function(e) {
+				switch(e.keyCode) {
+					case 37: socket.emit("keylr", "left")
+						document.getElementById("map").style.left = String(parseFloat(document.getElementById("map").style.left.replace("px", ""))+50)+"px"
+						break;
+					case 39:socket.emit("keylr", "right")
+						document.getElementById("map").style.left = String(parseFloat(document.getElementById("map").style.left.replace("px", ""))-50)+"px"
+						break;
+					case 38:socket.emit("keyud", "up")
+						document.getElementById("map").style.top = String(parseFloat(document.getElementById("map").style.top.replace("px", ""))+50)+"px"
+						break;
+					case 40:socket.emit("keyud", "down")
+						document.getElementById("map").style.top = String(parseFloat(document.getElementById("map").style.top.replace("px", ""))-50)+"px"
+						break;
+					case 32:
+						break;
+					default:
+						break;
+					}
+					};
+					var onet=0
+					var oneb=0
+					var onel=0
+					var oner=0
+					var twot=0
+					var twob=0
+					var twol=0
+					var twor=0
+
+		socket.on('newUser', function(data){
+			if(typeof self_id == "undefined"){
+				self_id = data[0];
+				self_color = colors[data[0]]
+				console.log(self_color)
+				ctx.fillStyle = "red";
+				ctx.fillText(String(self_id),300,250);
+			}
+		});
+		socket.on('newPoss', function(data){ctx.clearRect(0,0,500,500)
+			for(i=0; i < data.length; i++){
+				var self_theta;
+				ctx.fillStyle = self_color
+				ctx.fillRect(250-7.5, 250-7.5, 15, 15)
+				//ctx.fillText(String(self_id),250,250)
+				if(data[i].number == self_id){
+					locationx = data[i].x
+					locationy = data[i].y
+					ctx.drawImage(img, locationx-75, locationy-75, 150, 150, 0, 0, 500, 500);
+					self_theta = parseInt(data[i].theta)
+
+					console.log(data[i].theta)
+				}else{
+								ctx.moveTo(0,0)
+					ctx.fillStyle = colors[data[i].number]
+					//1708x859
+					ctx.fillRect(((75-(75-data[i].x)*(5/1.5))-((5/1.5)*locationx-(425))-10), ((75-(75-data[i].y)*(5/1.5))-((5/1.5)*locationy-(425))-10), 20, 20)
+					//ctx.fillText(data[i].number, ((250-(250-data[i].x)*2)-(2*locationx-500)), ((250-(250-data[i].y)*2)-(2*locationy-500)));//some nitty-gritty agjustments to make sure that the locations are right; the stuff with loxationx/y is for repositioning on the other client's map and the adjustments to data[i].x are because of the 2x scaling of the map
+					//ctx.drawImage(img, 250+locationx, 250+locationy, 150, 150, 0, 0, 500, 500);
+					//console.log(data[i].number)
+				}
+			}ctx.fillStyle = colors[self_id]
+			if(self_theta<0){
+						if(self_theta/4 == Math.floor(self_theta/4)) {
+							ctx.beginPath()
+								ctx.moveTo(0,125)
+								ctx.lineTo(0,500)
+								ctx.lineTo(500,500)
+								ctx.lineTo(500,125)
+								ctx.lineTo(250,250)
+								ctx.lineTo(0,125)
+							ctx.fill();
+						}else if((self_theta+1)/4 == Math.floor((self_theta+1)/4)) {
+							ctx.beginPath()
+								ctx.moveTo(125,0)
+								ctx.lineTo(250,250)
+								ctx.lineTo(125,500)
+								ctx.lineTo(500,500)
+								ctx.lineTo(500,0)
+								ctx.lineTo(125,0)
+							ctx.fill();
+						}else if((self_theta+2)/4 == Math.floor((self_theta+2)/4)) {
+							ctx.beginPath()
+								ctx.moveTo(0,0)
+								ctx.lineTo(0,375)
+								ctx.lineTo(250,250)
+								ctx.lineTo(500,375)
+								ctx.lineTo(500,0)
+								ctx.lineTo(0,0)
+							ctx.fill()
+						}else if((self_theta+3)/4 == Math.floor((self_theta+3)/4)) {
+							ctx.beginPath()
+								ctx.moveTo(0,0)
+								ctx.lineTo(375,0)
+								ctx.lineTo(250,250)
+								ctx.lineTo(375,500)
+								ctx.lineTo(0,500)
+								ctx.lineTo(0,0)
+							ctx.fill()
+						}
+					}else{
+						if(self_theta/4 == Math.floor(self_theta/4)) {
+							ctx.beginPath()
+								ctx.moveTo(0,125)
+								ctx.lineTo(0,500)
+								ctx.lineTo(500,500)
+								ctx.lineTo(500,125)
+								ctx.lineTo(250,250)
+								ctx.lineTo(0,125)
+							ctx.fill();
+						}else if((self_theta+1)/4 == Math.floor((self_theta+1)/4)) {
+							ctx.beginPath()
+								ctx.moveTo(125,0)
+								ctx.lineTo(250,250)
+								ctx.lineTo(125,500)
+								ctx.lineTo(500,500)
+								ctx.lineTo(500,0)
+								ctx.lineTo(125,0)
+							ctx.fill();
+						}else if((self_theta+2)/4 == Math.floor((self_theta+2)/4)) {
+							ctx.beginPath()
+								ctx.moveTo(0,0)
+								ctx.lineTo(0,375)
+								ctx.lineTo(250,250)
+								ctx.lineTo(500,375)
+								ctx.lineTo(500,0)
+								ctx.lineTo(0,0)
+							ctx.fill()
+						}else if((self_theta+3)/4 == Math.floor((self_theta+3)/4)) {
+							ctx.beginPath()
+								ctx.moveTo(0,0)
+								ctx.lineTo(375,0)
+								ctx.lineTo(250,250)
+								ctx.lineTo(375,500)
+								ctx.lineTo(0,500)
+								ctx.lineTo(0,0)
+							ctx.fill()
+						}					
+				}
+		});
+	</script>
+</body>
+</html>
